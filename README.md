@@ -16,4 +16,6 @@
    python get_books.py data/raw_books.json data/books.json
    ```
 
-author is always an array for consistency, even if there’s just one author.
+### Data Format Notes
+
+**Author field:** Always returned as a list of author names, even if there is only one author. This keeps the data consistent and simplifies processing.
