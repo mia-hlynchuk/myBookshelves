@@ -3,7 +3,10 @@ import json
 import re
 
 def extract_books(input_file, output_file):
-  books_data = []
+  books_data = {
+    'books': [],
+    'favorites': [] # Holds the id references to books
+  }
 
   # Open and read the JSON file
   with open(input_file, 'r', encoding='utf-8') as file:
@@ -35,11 +38,15 @@ def extract_books(input_file, output_file):
 
       # Default just incase its missing a color
       book_color = None 
-
+ 
       for item in book['collections']:
+        # Extract the book's color
         if item.startswith('_'):
           book_color = item.split('_')[1]
-       
+        # If its a favorite book, store the entry id 
+        elif item == 'Favorites':
+          books_data['favorites'].append(entry_id)
+        
       # Physical features of the book
       physical = {
         'color': book_color
@@ -73,7 +80,7 @@ def extract_books(input_file, output_file):
       if subtitle is not None:
         book_entry['subtitle'] = subtitle      
 
-      books_data.append(book_entry)
+      books_data['books'].append(book_entry)
       
 
 
