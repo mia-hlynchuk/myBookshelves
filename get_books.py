@@ -84,16 +84,18 @@ def extract_books(input_file, output_file):
 
 # Helper Functions
 def extract_subtitle(title_raw):
-  if len(title_raw) > 1:
-    subtitle = title_raw[1].split('(')[0].strip()
-
-    # Remove generic subtitles like "A Novel", "A Novel of" or "A Memoir" but not "A Memoir of"
-    if re.search(r'\bA Novel\b(?:\s+of\b)?|\bA Memoir\b(?!\s+of\b)', subtitle, re.IGNORECASE):
-      return None
+  if len(title_raw) == 1: 
+    return None
     
-    # Only return subtitle if it's not empty after stripping
-    return subtitle.strip() if subtitle.strip() else None
-  return None
+  subtitle = title_raw[1].split('(')[0].strip()
+
+  # Remove generic subtitles like "A Novel", "A Novel of" or "A Memoir" but not "A Memoir of"
+  if re.search(r'\bA Novel\b(?:\s+of\b)?|\bA Memoir\b(?!\s+of\b)', subtitle, re.IGNORECASE):
+    return None
+    
+  # Only return subtitle if it's not empty 
+  return subtitle if subtitle else None
+  
 
 def convert_to_num(s, num_type='int'):
   """
