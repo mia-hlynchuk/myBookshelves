@@ -33,32 +33,54 @@ def extract_books(input_file, output_file):
       # Combine with primary author
       authors = [primary_author] + secondary_author
 
-      # Clean and convert page count
-      pages_raw = book.get('pages')
-      try: 
-        pages = int(pages_raw.strip()) if pages_raw else None
-      except ValueError:
-        pages = None
-      
-      books_data.append({
+      # Default just incase its missing a color
+      book_color = None 
+
+      for item in book['collections']:
+        if item.startswith('_'):
+          book_color = item.split('_')[1]
+       
+      # Physical features of the book
+      physical = {
+        'color': book_color
+      }
+
+      # Optional fields because they might not be included 
+      height = convert_to_num(book.get('height'), 'float')
+      if height is not None:
+        physical['height'] = height
+
+      thickness = convert_to_num(book.get('thickness'), 'float')
+      if thickness is not None:
+        physical['thickness'] = thickness
+     
+      pages = convert_to_num(book.get('pages'), 'int')
+      if pages is not None:
+        physical['pages'] = pages
+
+
+      book_entry = {
         'id': entry_id,
         'isbn': book.get('originalisbn'),
         'title': title,
-        **({'subtitle': subtitle} if subtitle is not None else {}),     # Do not include 'subtitle' key if its empty 
         'author': authors,
         'started': book['datestarted'],
         'ended': book['dateread'],
-        'physical': {
-          'height': book.get('height'),
-          'thickness': book.get('thickness'),
-          'pages': pages
-        }
-      })
+        'quotes': 'optional quotes go here',
+        'physical': physical
+      }
+
+      if subtitle is not None:
+        book_entry['subtitle'] = subtitle      
+
+      books_data.append(book_entry)
       
+
+
   
   # Write the output file
   with open(output_file, "w", encoding='utf-8') as outfile:
-    json.dump(books_data, outfile, indent=2)
+    json.dump(books_data, outfile, ensure_ascii=False, indent=2)
 
 # Helper Functions
 def extract_subtitle(title_raw):
@@ -73,6 +95,31 @@ def extract_subtitle(title_raw):
     return subtitle.strip() if subtitle.strip() else None
   return None
 
+def convert_to_num(s, num_type='int'):
+  """
+  Extracts the number from the input string and converts it to an integer or a float.
+  
+  Parameters:
+    s (str) - the input string containing a number
+    num_type (str) - the type of number to convert to, either 'int' (default) or 'float' 
+  
+  Returns:
+    int, float rounded to 2 decimals or None if no number found
+  """
+  if not s:
+    return None
+  
+  pattern = r'\d+(\.\d+)?' if num_type == 'float' else r'\d+'
+  match = re.search(pattern, s)
+
+  if not match:
+    return None
+  
+  num = match.group()
+  
+  return round(float(num), 2) if num_type == 'float' else int(num)
+
+ 
 
 if __name__ == "__main__":
   if len(sys.argv) != 3:
