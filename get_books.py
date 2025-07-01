@@ -1,6 +1,7 @@
 import sys
 import json
 import re
+import copy
 
 def extract_books(input_file, output_file):
   books_data = {
@@ -57,6 +58,9 @@ def extract_books(input_file, output_file):
       # Default just incase its missing a color
       book_color = None 
 
+      # Keeps track if its a re-read 
+      is_reread = False 
+
       for item in book['collections']:
         # Extract the book's color
         if item.startswith('_'):
@@ -64,6 +68,9 @@ def extract_books(input_file, output_file):
         # If its a favorite book, store the entry id 
         elif item == 'Favorites':
           books_data['favorites'].append(entry_id)
+        # Check if its a reread book
+        elif item == 'Re-Read':
+          is_reread = True
 
       # Physical features of the book
       physical = {
@@ -99,12 +106,32 @@ def extract_books(input_file, output_file):
       
       if quotes:
         book_entry['quotes'] = quotes
-        
-
-      books_data['books'].append(book_entry)
       
 
+      books_data['books'].append(book_entry)
 
+      # Handle re-read books
+      if is_reread:
+        # Re-Reads alway include additional dates in the 'comment' field, separated by `||`
+        reread_dates = book['comment'].split('||')
+        
+        # Matches YYYY-MM or YYYY-MM-DD
+        date_pattern = r'\d{4}-\d{2}(?:-\d{2})?'
+
+        # For each re-read instance, duplicate the book and update its read dates
+        for rr_date in reread_dates:
+          dates = re.findall(date_pattern, rr_date)
+          
+          re_read_book = copy.deepcopy(book_entry)
+          re_read_book['started'] = dates[0]
+          re_read_book['ended'] = dates[1]
+
+          books_data['books'].append(re_read_book)
+
+        
+      
+
+      
   
   # Write the output file
   with open(output_file, "w", encoding='utf-8') as outfile:

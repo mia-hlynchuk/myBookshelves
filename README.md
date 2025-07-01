@@ -23,3 +23,6 @@ Always returned as a list of author names, even if there is only one author. Thi
 
 **privatecomment field (in the input JSON)**
 This field contains user-entered book quotes in the input JSON. If present, the quotes are separated by the `+` symbol.
+
+**comment field (in the input JSON)**
+This field contains re-read dates. It will always be present if the book is in the Re-Read collection. Dates are separated by the `||` symbol.
