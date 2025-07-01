@@ -36,9 +36,27 @@ def extract_books(input_file, output_file):
       # Combine with primary author
       authors = [primary_author] + secondary_author
 
+      # Quotes 
+      quotes = []
+      # 'privatecomment' holds quotes entered by the user
+      raw_quotes = book.get('privatecomment')
+      if raw_quotes:
+        # Replace all whitespace (spaces, tabs, newlines) with a single space
+        cleaned = re.sub(r'\s+', ' ', raw_quotes)
+
+        # Split on '+', strip each part and ignore empty strings
+        raw_quotes_list = cleaned.split('+')        
+        
+        # Loop through each piece to add to quotes 
+        for q in raw_quotes_list:
+          stripped = q.strip()
+          # Only add if its not an empty string after stripping
+          if stripped: 
+            quotes.append(stripped)
+     
       # Default just incase its missing a color
       book_color = None 
- 
+
       for item in book['collections']:
         # Extract the book's color
         if item.startswith('_'):
@@ -46,7 +64,7 @@ def extract_books(input_file, output_file):
         # If its a favorite book, store the entry id 
         elif item == 'Favorites':
           books_data['favorites'].append(entry_id)
-        
+
       # Physical features of the book
       physical = {
         'color': book_color
@@ -73,12 +91,15 @@ def extract_books(input_file, output_file):
         'author': authors,
         'started': book['datestarted'],
         'ended': book['dateread'],
-        'quotes': 'optional quotes go here',
         'physical': physical
       }
 
       if subtitle is not None:
-        book_entry['subtitle'] = subtitle      
+        book_entry['subtitle'] = subtitle    
+      
+      if quotes:
+        book_entry['quotes'] = quotes
+        
 
       books_data['books'].append(book_entry)
       
