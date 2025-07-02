@@ -5,7 +5,6 @@ import copy
 
 def extract_books(input_file, output_file):
   books_data = {
-    'books': [],
     'favorites': [] # Holds the id references to books
   }
 
@@ -106,9 +105,8 @@ def extract_books(input_file, output_file):
       
       if quotes:
         book_entry['quotes'] = quotes
-      
-
-      books_data['books'].append(book_entry)
+       
+      append_entry(book_entry, books_data)
 
       # Handle re-read books
       if is_reread:
@@ -126,13 +124,10 @@ def extract_books(input_file, output_file):
           re_read_book['started'] = dates[0]
           re_read_book['ended'] = dates[1]
 
-          books_data['books'].append(re_read_book)
+          append_entry(re_read_book, books_data)
 
-        
-      
-
-      
   
+        
   # Write the output file
   with open(output_file, "w", encoding='utf-8') as outfile:
     json.dump(books_data, outfile, ensure_ascii=False, indent=2)
@@ -176,7 +171,12 @@ def convert_to_num(s, num_type='int'):
   
   return round(float(num), 2) if num_type == 'float' else int(num)
 
- 
+
+def append_entry(entry, data):
+  # Append the book entry under the year it was finished in
+  year = re.findall(r'\d{4}', entry['ended'])[0]
+  # Just in case that year doesn't exit yet, create an empty list for it
+  data.setdefault(year, []).append(entry)
 
 if __name__ == "__main__":
   if len(sys.argv) != 3:
