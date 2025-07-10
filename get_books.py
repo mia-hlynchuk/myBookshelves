@@ -5,9 +5,7 @@ import copy
 
 def extract_books(input_file, output_file):
   books_data = {
-    'favorites': [], # Holds the id references to books
-    'booksByYear': {}
-
+    'favorites': [] # Holds the id references to books
   }
 
   # Open and read the JSON file
@@ -108,7 +106,7 @@ def extract_books(input_file, output_file):
       if quotes:
         book_entry['quotes'] = quotes
        
-      append_entry(book_entry, books_data['booksByYear'])
+      append_entry(book_entry, books_data)
 
       # Handle re-read books
       if is_reread:
@@ -119,15 +117,14 @@ def extract_books(input_file, output_file):
         date_pattern = r'\d{4}-\d{2}(?:-\d{2})?'
 
         # For each re-read instance, duplicate the book and update its read dates
-        for index, rr_date in enumerate(reread_dates, start=1):
+        for rr_date in reread_dates:
           dates = re.findall(date_pattern, rr_date)
-  
+          
           re_read_book = copy.deepcopy(book_entry)
-          re_read_book['id'] = f"{re_read_book['id']}_{index}"
           re_read_book['started'] = dates[0]
           re_read_book['ended'] = dates[1]
 
-          append_entry(re_read_book, books_data['booksByYear'])
+          append_entry(re_read_book, books_data)
 
   
         
