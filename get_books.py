@@ -24,18 +24,11 @@ def extract_books(input_file, output_file):
 
       subtitle = extract_subtitle(title_raw)
 
-      primary_author = book['primaryauthor']
-      
-      secondary_author_raw = book.get('secondaryauthor')
-      # Always return a list, even if empty
-      secondary_author = secondary_author_raw.split("|") if secondary_author_raw else []
-
-      # Removing duplicates if secondary is just the same primary
-      if len(secondary_author) == 1 and secondary_author[0].strip() == primary_author.strip():
-        secondary_author = [] 
-
-      # Combine with primary author
-      authors = [primary_author] + secondary_author
+      # Get last, first names of authors and illustrators only
+      authors = []
+      for author in book['authors']:
+        if author['role'] in ('Author', 'Illustrator'):
+          authors.append(author['lf'])
       
       # Quotes 
       quotes = []
