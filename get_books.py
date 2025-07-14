@@ -5,7 +5,8 @@ import copy
 
 def extract_books(input_file, output_file):
   books_data = {
-    'favorites': [] # Holds the id references to books
+    'favorites': [], # Holds the id references to books
+    'booksByYear': {}
   }
 
   # Open and read the JSON file
@@ -35,7 +36,7 @@ def extract_books(input_file, output_file):
 
       # Combine with primary author
       authors = [primary_author] + secondary_author
-
+      
       # Quotes 
       quotes = []
       # 'privatecomment' holds quotes entered by the user
@@ -89,7 +90,7 @@ def extract_books(input_file, output_file):
       if pages is not None:
         physical['pages'] = pages
 
-
+   
       book_entry = {
         'id': entry_id,
         'isbn': book.get('originalisbn'),
@@ -105,9 +106,12 @@ def extract_books(input_file, output_file):
       
       if quotes:
         book_entry['quotes'] = quotes
-       
-      append_entry(book_entry, books_data)
 
+      
+      
+      append_entry(book_entry, books_data['booksByYear'])
+     
+      
       # Handle re-read books
       if is_reread:
         # Re-Reads alway include additional dates in the 'comment' field, separated by `||`
@@ -124,10 +128,9 @@ def extract_books(input_file, output_file):
           re_read_book['started'] = dates[0]
           re_read_book['ended'] = dates[1]
 
-          append_entry(re_read_book, books_data)
+          append_entry(re_read_book, books_data['booksByYear'])
 
-  
-        
+    
   # Write the output file
   with open(output_file, "w", encoding='utf-8') as outfile:
     json.dump(books_data, outfile, ensure_ascii=False, indent=2)
