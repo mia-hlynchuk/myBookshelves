@@ -1,5 +1,6 @@
 import sys
 import json
+import html
 import re
 import copy
 
@@ -17,7 +18,7 @@ def extract_books(input_file, output_file):
     for entry_id, book in data.items(): 
       # Clean up the 'title' property, which may include a subtitle
       # Step 1: Replace HTML entity and split on colon to separate title and subtitle
-      title_raw = book['title'].replace("&#039;", "'").split(':')
+      title_raw = html.unescape(book['title']).split(':')
 
       # Step 2: Remove any text after '(', since some entries repeat the title or series' name in parentheses
       title = title_raw[0].split('(')[0].strip()
@@ -28,7 +29,7 @@ def extract_books(input_file, output_file):
       authors = []
       for author in book['authors']:
         if author['role'] in ('Author', 'Illustrator'):
-          authors.append(author['lf'])
+          authors.append(html.unescape(author['lf']))
       
       # Quotes 
       quotes = []
