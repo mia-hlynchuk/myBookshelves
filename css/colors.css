@@ -1,0 +1,41 @@
+:root {
+  /* Bookcase */
+  --bkcase-border: #bd8967;
+  --bkcase-inside: #9a8272;
+  --bkcase-label: #f2cfb8;
+
+  /* Book colors (background, text) */
+  --bk-bkg-black: #1c1c1e;
+  --bk-text-black:  #fafafa;
+  
+  --bk-bkg-grey: #a1a1aa;
+  --bk-text-grey: #1c1c1e;
+
+  --bk-bkg-white: #fafafa;
+  --bk-text-white: #1c1c1e;
+
+  --bk-bkg-green: #4caf50;
+  --bk-text-green: #ffffff;
+
+  --bk-bkg-blue: #3f8efc;
+  --bk-text-blue: #ffffff;
+  
+  --bk-bkg-pink: #f48fb1;
+  --bk-text-pink: #1c1c1e;
+
+  --bk-bkg-red: #ef5350;
+  --bk-text-red: #ffffff;
+
+  --bk-bkg-purple: #9c27b0;
+  --bk-text-purple: #ffffff;
+  
+  --bk-bkg-brown: #8d6e63;
+  --bk-text-brown: #ffffff;
+
+  --bk-bkg-orange: #ffa726;
+  --bk-text-orange: #1c1c1e;
+
+  --bk-bkg-yellow: #ffeb3b;
+  --bk-text-yellow: #1c1c1e;
+
+}
