@@ -71,19 +71,16 @@ def extract_books(input_file, output_file):
         'color': book_color
       }
 
-      # Optional fields because they might not be included 
+      pages = convert_to_num(book.get('pages'), 'int')
+      physical['pages'] = pages
+
       height = convert_to_num(book.get('height'), 'float')
-      if height is not None:
-        physical['height'] = height
+      default_height = 8.5
+      physical['height'] = height if height is not None else default_height
 
       thickness = convert_to_num(book.get('thickness'), 'float')
-      if thickness is not None:
-        physical['thickness'] = thickness
-     
-      pages = convert_to_num(book.get('pages'), 'int')
-      if pages is not None:
-        physical['pages'] = pages
-
+      default_thickness = 0.00323 * pages + 0.0547
+      physical['thickness'] = thickness if thickness is not None else default_thickness
    
       book_entry = {
         'id': entry_id,
